@@ -1,0 +1,17 @@
+services:
+  mysql_kiseok:
+    image: mysql:8.0
+    container_name: mysql_kiseok
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_DATABASE}
+      MYSQL_USER: ${MYSQL_DB_USER}
+      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
+    ports:
+      - "${MYSQL_DB_PORT}:3306"
+    volumes:
+      - mysql_kiseok_data:/var/lib/mysql_kiseok
+
+
+volumes:
+  mysql_kiseok_data:
