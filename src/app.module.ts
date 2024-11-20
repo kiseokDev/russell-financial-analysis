@@ -35,7 +35,7 @@ import { GrowthModule } from './analysis/growth/growth.module';
             password: configService.get<string>('MYSQL_DB_PASSWORD'),
             database: configService.get<string>('MYSQL_DB_DATABASE'),
             autoLoadEntities: true,
-            synchronize: true, // 주의: 프로덕션 환경에서는 false로 설정하세요
+            synchronize: false, // 주의: 프로덕션 환경에서는 false로 설정하세요
           };
         }
       },

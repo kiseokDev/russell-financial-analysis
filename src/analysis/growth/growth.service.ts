@@ -3,10 +3,19 @@ import { CreateGrowthDto } from './dto/create-growth.dto';
 import { UpdateGrowthDto } from './dto/update-growth.dto';
 import axios from 'axios';
 import { parse } from 'csv-parse/sync';
+import { RUSSEL_2000 } from 'src/common/russellList';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IncomeStatement } from './entities/growth.entity';
+import { Repository } from 'typeorm';
+import { MOCKDATA } from 'src/common/testFinanaceData';
 
 @Injectable()
 export class GrowthService {
   private readonly API_KEY = '4GtnUVtyfkRiiuCsH3VZLt2NgB2qRaxg';
+  constructor(
+    @InjectRepository(IncomeStatement)
+    private IncomeStatementRepository: Repository<IncomeStatement>,
+  ) {}
   create(createGrowthDto: CreateGrowthDto) {
     return 'This action adds a new growth';
   }
@@ -27,7 +36,7 @@ export class GrowthService {
     return `This action removes a #${id} growth`;
   }
 
-  async getRussell2000Components() {
+  async getRussell2000Components(): Promise<string[]> {
     try {
       // iShares IWM ETF 홀딩 데이터
       const response = await axios.get(
@@ -69,6 +78,21 @@ export class GrowthService {
     const years = financialData.length - 1;
     const growthRate = ((latest_eps / oldest_eps) ** (1 / years) - 1) * 100;
     return Number(growthRate.toFixed(2));
+  }
+
+  async getIncomeStatement(symbol: string): Promise<FinancialStatement[]> {
+    try {
+      const { data: financialData } = await axios.get<FinancialStatement[]>(
+        `https://financialmodelingprep.com/api/v3/income-statement/${symbol}?period=annual&apikey=${this.API_KEY}`,
+      );
+      if (!financialData || financialData.length < 2) {
+        return null;
+      }
+      return financialData;
+    } catch (error) {
+      console.error('Error fetching income statement for ${symbol}:', error);
+      return null;
+    }
   }
 
   async getPegRatio(symbol: string) {
@@ -117,6 +141,29 @@ export class GrowthService {
       console.error(`Error fetching price for ${symbol}:`, error);
       return 0;
     }
+  }
+
+  async getRussell2000IncomeStatement() {
+    // const symbols = await this.getRussell2000Components();
+    //1~100length 까지만
+    const symbols = RUSSEL_2000.slice(0, 50);
+    const incomeStatements = await Promise.all(
+      symbols.map(async (symbol) => {
+        const data = await this.getIncomeStatement(symbol);
+        if (!data) return [];
+        return data.map((incomeStatement) => ({
+          ...incomeStatement,
+          index: 'russell',
+        }));
+      }),
+    );
+    incomeStatements.flat().forEach(async (incomeStatement) => {
+      await this.IncomeStatementRepository.save(incomeStatement);
+    });
+    const pegRatios = await Promise.all(
+      symbols.map((symbol) => this.getPegRatio(symbol)),
+    );
+    return pegRatios;
   }
 }
 export interface Stock {

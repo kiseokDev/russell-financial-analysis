@@ -26,10 +26,10 @@ export class GrowthController {
     return this.growthService.getRussell2000Components();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.growthService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.growthService.findOne(+id);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGrowthDto: UpdateGrowthDto) {
@@ -45,5 +45,10 @@ export class GrowthController {
   getPegRatio(@Param('symbol') symbol: string) {
     console.log('symbol:', symbol);
     return this.growthService.getPegRatio(symbol);
+  }
+
+  @Get('income-statement')
+  getRussell2000IncomeStatement() {
+    return this.growthService.getRussell2000IncomeStatement();
   }
 }
