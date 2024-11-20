@@ -24,7 +24,7 @@ import { GrowthModule } from './analysis/growth/growth.module';
             database: 'db.sqlite',
             autoLoadEntities: true,
             synchronize: true,
-            dropSchema: true,
+            dropSchema: false,
           };
         } else {
           return {

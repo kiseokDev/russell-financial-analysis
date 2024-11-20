@@ -7,11 +7,11 @@ import { RUSSEL_2000 } from 'src/common/russellList';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IncomeStatement } from './entities/growth.entity';
 import { Repository } from 'typeorm';
-import { MOCKDATA } from 'src/common/testFinanaceData';
 
 @Injectable()
 export class GrowthService {
-  private readonly API_KEY = '4GtnUVtyfkRiiuCsH3VZLt2NgB2qRaxg';
+  // private readonly API_KEY = '4GtnUVtyfkRiiuCsH3VZLt2NgB2qRaxg';
+  private readonly API_KEY = 'UFPe8e9mkagHeYOoEkWDIEd9PkQJDZgE';
   constructor(
     @InjectRepository(IncomeStatement)
     private IncomeStatementRepository: Repository<IncomeStatement>,
@@ -146,7 +146,7 @@ export class GrowthService {
   async getRussell2000IncomeStatement() {
     // const symbols = await this.getRussell2000Components();
     //1~100length 까지만
-    const symbols = RUSSEL_2000.slice(0, 50);
+    const symbols = RUSSEL_2000.slice(90, 100);
     const incomeStatements = await Promise.all(
       symbols.map(async (symbol) => {
         const data = await this.getIncomeStatement(symbol);
