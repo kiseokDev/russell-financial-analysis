@@ -33,7 +33,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "yahoo-finance2": "^2.13.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
